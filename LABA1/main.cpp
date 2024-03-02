@@ -10,6 +10,7 @@ int main() {
 	cout << "Enter the first num: ";              
 	cin >> a;
 	Integ_num num1(a);
+
 	num1.print_num();
 	SetConsoleTextAttribute(hConsole, 3);                  //
 	cout << "\nEnter the second num: ";

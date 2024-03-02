@@ -49,7 +49,7 @@ namespace Binary {
 		}
 		reverse(quotient.begin(), quotient.end()); //direct code
 
-		for (int i = 0; i < bit_remainder; ++i) { // Примерно 24 бита для хранения дробной части
+		for (int i = 0; i < bit_remainder; ++i) { 
 			remainder_num *= 2;
 			if (remainder_num >= 1) {
 				remainder.push_back(1);
@@ -71,10 +71,6 @@ namespace Binary {
 			}
 			n = -1;
 			for (int i = 0; i < remainder.size() && remainder[i] != 1; i++) {
-				if (i == remainder.size() - 1) {
-					n = 0;
-					break;
-				}
 				n--;
 			}
 		}
@@ -86,8 +82,6 @@ namespace Binary {
 			n = quotient.size() - 1;
 			sign = 0;
 		}
-
-		int size_bit;
 		if (n >= 0) {
 
 			for (int i = 1; i < quotient.size() && mantissa.size() < 23; i++) { //первый бит не записываем
@@ -96,19 +90,13 @@ namespace Binary {
 			for (int i = 0; i < remainder.size() - 1 && mantissa.size() < 23; i++) {
 				mantissa.push_back(remainder[i]);
 			}
-			size_bit = mantissa.size();
-			for (int i = 0; i < 23 - size_bit; i++) {
-				mantissa.push_back(0);
-			}
+
 		}
 		else {
 			for (int i = -n; i < bit_remainder; i++) {
 				mantissa.push_back(remainder[i]);
 			}
-			size_bit = mantissa.size();
-			for (int i = 0; i < 23 - size_bit; i++) {
-				mantissa.push_back(0);
-			}
+
 		}
 		decimal_exp = 127 + n;
 		buff = decimal_exp;
@@ -152,7 +140,7 @@ namespace Binary {
 			for (int i = 0; i < 23; i++) {
 				if (mantissa[i] == a.mantissa[i]) {
 				}
-				else if (exponent[i] > a.exponent[i]) {
+				else if (mantissa[i] > a.mantissa[i]) {
 					sum = *this;
 					mantissa_less_num = a.mantissa;
 					break;

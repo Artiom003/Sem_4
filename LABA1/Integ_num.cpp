@@ -27,7 +27,7 @@ namespace Binary {
 			buff /= 2;
 		}
 		int size = direct_code.size();
-		for (int i = 0; i < bytes - size - 1; i++) {
+		for (int i = 0; i < bits - size - 1; i++) {
 			direct_code.push_back(0);
 		}
 		if (num >= 0) {
@@ -60,6 +60,9 @@ namespace Binary {
 
 	}
 	Integ_num& Integ_num::operator =(const Integ_num& a) {
+		if (bits != a.bits) {
+			throw runtime_error("Error in bites");
+		}
 		this->direct_code = a.direct_code;
 		this->return_code = a.return_code;
 		this->additional_code = a.additional_code;
@@ -68,7 +71,9 @@ namespace Binary {
 	}
 
 	Integ_num Integ_num::operator +(const Integ_num& a) {
-
+		if (bits != a.bits) {
+			throw runtime_error("Error in bites");
+		}
 		Integ_num sum(0);
 
 		int carry;
@@ -138,14 +143,18 @@ namespace Binary {
 	}
 
 	Integ_num Integ_num::operator *(const Integ_num& a) {  //division
+
+		if (bits != a.bits) {
+			throw runtime_error("Error in bites");
+		}
 		Integ_num mult(0);
 
-		for (int i = bytes / 2 - 1; i >= 0; i--) {
-			int carry = 0;  // Перенос
+		for (int i = bits / 2 - 1; i >= 0; i--) {
+			int carry = 0;  
 
-			for (int j = bytes / 2 - 1; j >= 0; j--) {
+			for (int j = bits / 2 - 1; j >= 0; j--) {
 				int pos = i + j + 1;
-				int product = mult.direct_code[pos] + direct_code[i + bytes / 2] * a.direct_code[j + bytes / 2] + carry;
+				int product = mult.direct_code[pos] + direct_code[i + bits / 2] * a.direct_code[j + bits / 2] + carry;
 				mult.direct_code[pos] = product % 2;
 				carry = product / 2;
 			}
@@ -184,10 +193,13 @@ namespace Binary {
 	}
 
 	Fixed_point Integ_num::operator/(const Integ_num& a) {
+		if (bits != a.bits) {
+			throw runtime_error("Error in bites");
+		}
 		Fixed_point div;
 
 		int size = 0;
-		for (int i = 1; i < bytes; i++) {
+		for (int i = 1; i < bits; i++) {
 			if (direct_code[i] == 1) {
 				break;
 			}
@@ -201,12 +213,12 @@ namespace Binary {
 			num1.push_back(1);
 		}
 
-		for (int i = 1 + size; i < bytes; i++) {
+		for (int i = 1 + size; i < bits; i++) {
 			num1.push_back(direct_code[i]);
 		}
 
 		size = 0;
-		for (int i = 1; i < bytes; i++) {
+		for (int i = 1; i < bits; i++) {
 			if (a.direct_code[i] == 1) {
 				break;
 			}
@@ -220,7 +232,7 @@ namespace Binary {
 			num2.push_back(1);
 		}
 
-		for (int i = 1 + size; i < bytes; i++) {
+		for (int i = 1 + size; i < bits; i++) {
 			num2.push_back(a.direct_code[i]);
 		}
 		if (num1.empty()) {
@@ -236,8 +248,7 @@ namespace Binary {
 			return div;
 		}
 		if (a.num == 0) {
-			throw runtime_error("Error");
-			return div;
+			throw runtime_error("Error in division by zero");
 		}
 
 		/////////////////////////////////////////////////////////
@@ -332,4 +343,18 @@ namespace Binary {
 		return result;
 	}
 
+
+	int Integ_num::get_bits() {
+		return bits;
+	}
+	void Integ_num::set_bits(int value) {
+		bits = value;
+		int buff = num;
+
+		Integ_num p(num);
+		direct_code = p.direct_code;
+		return_code = p.return_code;
+		additional_code = p.additional_code;
+
+	}
 }
